@@ -8,16 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mbedtls
-PKG_VERSION:=2.5.1
+PKG_VERSION:=2.7.0
 PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-gpl.tgz
 PKG_SOURCE_URL:=https://tls.mbed.org/download/
-PKG_HASH:=312f020006f0d8e9ede3ed8e73d907a629baf6475229703941769372ab0adee2
+PKG_HASH:=2c6fe289b4b50bf67b4839e81b07fcf52a19f5129d0241d2aa4d49cb1ef11e4f
 
 PKG_BUILD_PARALLEL:=1
 PKG_LICENSE:=GPL-2.0+
+PKG_CPE_ID:=cpe:/a:arm:mbed_tls
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk

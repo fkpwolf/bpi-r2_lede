@@ -9,19 +9,20 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=iptables
-PKG_VERSION:=1.6.1
+PKG_VERSION:=1.6.2
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://git.netfilter.org/iptables
-PKG_SOURCE_VERSION:=7df66f1c13563cfbab75246b009ce36f69ee4487
-PKG_MIRROR_HASH:=22f15ef41fd8e3724bedcee666b7b6a3491d2d038d580ef1fb032718dcb73f14
+PKG_SOURCE_VERSION:=c16bdec15137b241586310d0e61bc88cc3726004
+PKG_MIRROR_HASH:=72e4bec94a56dd600097846c773e1074ff705e38f800ef221db646c064371a53
 
 PKG_FIXUP:=autoreconf
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 PKG_LICENSE:=GPL-2.0
+PKG_CPE_ID:=cpe:/a:netfilter_core_team:iptables
 
 include $(INCLUDE_DIR)/package.mk
 ifeq ($(DUMP),)
@@ -123,6 +124,20 @@ Extra iptables extensions for connection tracking.
 
 endef
 
+define Package/iptables-mod-conntrack-label
+$(call Package/iptables/Module, +kmod-ipt-conntrack-label @IPTABLES_CONNLABEL)
+  TITLE:=Connection tracking labeling extension
+  DEFAULT:=y if IPTABLES_CONNLABEL
+endef
+
+define Package/iptables-mod-conntrack-label/description
+Match and set label(s) on connection tracking entries
+
+ Matches:
+  - connlabel
+
+endef
+
 define Package/iptables-mod-filter
 $(call Package/iptables/Module, +kmod-ipt-filter)
   TITLE:=Content inspection extensions
@@ -215,6 +230,20 @@ define Package/iptables-mod-nflog/description
   - libxt_NFLOG
 
 endef
+
+define Package/iptables-mod-trace
+$(call Package/iptables/Module, +kmod-ipt-debug)
+  TITLE:=Netfilter TRACE target
+endef
+
+define Package/iptables-mod-trace/description
+ iptables extension for TRACE target
+
+ Includes:
+  - libxt_TRACE
+
+endef
+
 
 define Package/iptables-mod-nfqueue
 $(call Package/iptables/Module, +kmod-nfnetlink-queue +kmod-ipt-nfqueue)
@@ -381,6 +410,15 @@ U32 iptables extensions.
 
 endef
 
+define Package/iptables-mod-checksum
+$(call Package/iptables/Module, +kmod-ipt-checksum)
+  TITLE:=IP CHECKSUM target extension
+endef
+
+define Package/iptables-mod-checksum/description
+iptables extension for the CHECKSUM calculation target
+endef
+
 define Package/ip6tables
 $(call Package/iptables/Default)
   DEPENDS:=@IPV6 +kmod-ip6tables +iptables
@@ -468,6 +506,7 @@ CONFIGURE_ARGS += \
 	--enable-devel \
 	--with-kernel="$(LINUX_DIR)/user_headers" \
 	--with-xtlibdir=/usr/lib/iptables \
+	--with-xt-lock-name=/var/run/xtables.lock \
 	$(if $(CONFIG_IPTABLES_CONNLABEL),,--disable-connlabel) \
 	$(if $(CONFIG_IPTABLES_NFTABLES),,--disable-nftables) \
 	$(if $(CONFIG_IPV6),,--disable-ipv6)
@@ -568,6 +607,7 @@ endef
 
 $(eval $(call BuildPackage,iptables))
 $(eval $(call BuildPlugin,iptables-mod-conntrack-extra,$(IPT_CONNTRACK_EXTRA-m)))
+$(eval $(call BuildPlugin,iptables-mod-conntrack-label,$(IPT_CONNTRACK_LABEL-m)))
 $(eval $(call BuildPlugin,iptables-mod-extra,$(IPT_EXTRA-m)))
 $(eval $(call BuildPlugin,iptables-mod-filter,$(IPT_FILTER-m)))
 $(eval $(call BuildPlugin,iptables-mod-ipopt,$(IPT_IPOPT-m)))
@@ -584,7 +624,9 @@ $(eval $(call BuildPlugin,iptables-mod-tproxy,$(IPT_TPROXY-m)))
 $(eval $(call BuildPlugin,iptables-mod-tee,$(IPT_TEE-m)))
 $(eval $(call BuildPlugin,iptables-mod-u32,$(IPT_U32-m)))
 $(eval $(call BuildPlugin,iptables-mod-nflog,$(IPT_NFLOG-m)))
+$(eval $(call BuildPlugin,iptables-mod-trace,$(IPT_DEBUG-m)))
 $(eval $(call BuildPlugin,iptables-mod-nfqueue,$(IPT_NFQUEUE-m)))
+$(eval $(call BuildPlugin,iptables-mod-checksum,$(IPT_CHECKSUM-m)))
 $(eval $(call BuildPackage,ip6tables))
 $(eval $(call BuildPlugin,ip6tables-extra,$(IPT_IPV6_EXTRA-m)))
 $(eval $(call BuildPlugin,ip6tables-mod-nat,$(IPT_NAT6-m)))

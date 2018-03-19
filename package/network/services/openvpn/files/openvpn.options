@@ -30,6 +30,7 @@ ecdh_curve
 echo
 engine
 explicit_exit_notify
+extra_certs
 fragment
 group
 hand_window
@@ -131,6 +132,7 @@ txqueuelen
 up
 user
 verb
+verify_client_cert
 verify_x509_name
 x509_username_field
 '

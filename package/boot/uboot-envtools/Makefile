@@ -19,7 +19,7 @@ PKG_SOURCE_URL:=\
 	ftp://ftp.denx.de/pub/u-boot
 PKG_HASH:=bdc68d5f9455ad933b059c735d983f2c8b6b552dafb062e5ff1444f623021955
 
-PKG_BUILD_DEPENDS:=+fstools
+PKG_BUILD_DEPENDS:=fstools
 
 PKG_LICENSE:=GPL-2.0 GPL-2.0+
 PKG_LICENSE_FILES:=Licenses/README
@@ -88,9 +88,13 @@ ifneq ($(CONFIG_TARGET_imx6),)
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_DATA) ./files/imx6 $(1)/etc/uci-defaults/30_uboot-envtools
 endif
+ifneq ($(CONFIG_TARGET_ipq40xx),)
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_DATA) ./files/ipq40xx $(1)/etc/uci-defaults/30_uboot-envtools
+endif
 ifneq ($(CONFIG_TARGET_ipq806x),)
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_DATA) ./files/ipq $(1)/etc/uci-defaults/30_uboot-envtools
+	$(INSTALL_DATA) ./files/ipq806x $(1)/etc/uci-defaults/30_uboot-envtools
 endif
 ifneq ($(CONFIG_TARGET_kirkwood),)
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
